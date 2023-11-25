@@ -20,7 +20,15 @@ const drawBall = () => {
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
+
+  // Add these lines to draw the letter 'B' inside the ball
+  ctx.font = '16px Arial';
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('B', ball.x, ball.y);
 };
+
 
 // Update the draw function to include drawBall
 const draw = () => {
