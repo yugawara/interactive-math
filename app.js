@@ -13,6 +13,7 @@ const ball = {
   dy: -2
 };
 
+
 // Function to draw the ball
 const drawBall = () => {
   ctx.beginPath();
