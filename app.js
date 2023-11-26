@@ -20,22 +20,19 @@ mathDiv.style.position = 'absolute';
 mathDiv.innerHTML = '\\(\\sqrt{2}\\)';
 document.body.appendChild(mathDiv);
 
-// Function to draw the MathJax-rendered expression
-const drawMathExpression = () => {
-  MathJax.typesetPromise().then(() => {
-    // Get the SVG element rendered by MathJax
-    const mathSVG = mathDiv.querySelector('svg');
-    
-    if (mathSVG) {
-      // Convert the SVG into an image and draw it on the canvas
-      const img = new Image();
-      img.onload = () => {
-        ctx.drawImage(img, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
-      };
-      img.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(mathSVG))));
-    }
-  });
-};
+let mathExpressionImage = new Image();
+
+// Pre-render the MathJax expression
+MathJax.typesetPromise().then(() => {
+  const mathSVG = mathDiv.querySelector('svg');
+  if (mathSVG) {
+    const svgData = new XMLSerializer().serializeToString(mathSVG);
+    mathExpressionImage.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgData)));
+    mathExpressionImage.onload = () => {
+      start(); // Start the animation after the image is ready
+    };
+  }
+});
 
 // Function to draw the ball
 const drawBall = () => {
@@ -45,8 +42,10 @@ const drawBall = () => {
   ctx.fill();
   ctx.closePath();
 
-  // Draw the MathJax expression
-  drawMathExpression();
+  // Use the pre-rendered MathJax expression
+  if (mathExpressionImage.complete) {
+    ctx.drawImage(mathExpressionImage, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
+  }
 };
 
 // Update the draw function to include drawBall
@@ -80,15 +79,9 @@ const stopStartHandler = (e) => {
   if (e.keyCode === 83) { // 'S' key
     shouldAnimate = !shouldAnimate;
     if (shouldAnimate) {
-      requestAnimationFrame(start);
+      start();
     }
   }
 };
 
 document.addEventListener("keydown", stopStartHandler, false);
-
-// Start the animation once the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM fully loaded and parsed');
-  start();
-});
