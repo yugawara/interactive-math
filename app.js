@@ -4,6 +4,8 @@ const ctx = canvasEl.getContext('2d');
 canvasEl.width = 470;
 canvasEl.height = 570;
 
+// console.log(`MathJax version: ${MathJax.version}`);
+
 // Define ball properties
 const ball = {
   x: canvasEl.width / 2,
