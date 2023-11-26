@@ -16,6 +16,23 @@ const ball = {
 };
 
 
+// Function to draw the MathJax-rendered expression
+const drawMathExpression = () => {
+  const mathContainer = document.getElementById('math-container');
+  MathJax.typesetPromise().then(() => {
+    const mathSVG = mathContainer.querySelector('svg');
+    
+    // Draw the SVG onto the canvas
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
+    };
+    img.src = 'data:image/svg+xml;base64,' + window.btoa(encodeURIComponent(new XMLSerializer().serializeToString(mathSVG)));
+  });
+};
+
+
+
 // Function to draw the ball
 const drawBall = () => {
   ctx.beginPath();
@@ -23,6 +40,8 @@ const drawBall = () => {
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
+    // Draw the MathJax expression
+    drawMathExpression();
 
   // Add these lines to draw the letter 'B' inside the ball
   ctx.font = '16px Arial';
