@@ -27,7 +27,8 @@ MathJax.typesetPromise().then(() => {
   const mathSVG = mathDiv.querySelector('svg');
   if (mathSVG) {
     const svgData = new XMLSerializer().serializeToString(mathSVG);
-    mathExpressionImage.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgData)));
+    console.log(svgData)
+    mathExpressionImage.src = 'data:image/svg+xml;base64,' + window.btoa(svgData);
     mathExpressionImage.onload = () => {
       start(); // Start the animation after the image is ready
     };
