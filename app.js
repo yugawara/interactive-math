@@ -15,18 +15,14 @@ const ball = {
 
 // Create a hidden div for MathJax
 const mathDiv = document.createElement('div');
-mathDiv.style.visibility = 'hidden';
-mathDiv.style.position = 'absolute';
-mathDiv.innerHTML = '\\(\\sqrt{2}\\)';
 document.body.appendChild(mathDiv);
 
 let mathExpressionImage = new Image();
 
 // Pre-render the MathJax expression
 MathJax.typesetPromise().then(() => {
-  const mathSVG = mathDiv.querySelector('svg');
-  if (mathSVG) {
-    const svgData = new XMLSerializer().serializeToString(mathSVG);
+  if (mathDiv) {
+    const svgData = new XMLSerializer().serializeToString(mathDiv);
     console.log(svgData)
     mathExpressionImage.src = 'data:image/svg+xml;base64,' + window.btoa(svgData);
     mathExpressionImage.onload = () => {
