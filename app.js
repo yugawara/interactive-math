@@ -4,8 +4,6 @@ const ctx = canvasEl.getContext('2d');
 canvasEl.width = 470;
 canvasEl.height = 570;
 
-// console.log(`MathJax version: ${MathJax.version}`);
-
 // Define ball properties
 const ball = {
   x: canvasEl.width / 2,
@@ -15,42 +13,41 @@ const ball = {
   dy: -2
 };
 
+// Create a hidden div for MathJax
+const mathDiv = document.createElement('div');
+mathDiv.style.visibility = 'hidden';
+mathDiv.style.position = 'absolute';
+mathDiv.innerHTML = '\\(\\sqrt{2}\\)';
+document.body.appendChild(mathDiv);
 
 // Function to draw the MathJax-rendered expression
 const drawMathExpression = () => {
-  const mathContainer = document.getElementById('math-container');
   MathJax.typesetPromise().then(() => {
-    const mathSVG = mathContainer.querySelector('svg');
+    // Get the SVG element rendered by MathJax
+    const mathSVG = mathDiv.querySelector('svg');
     
-    // Draw the SVG onto the canvas
-    const img = new Image();
-    img.onload = () => {
-      ctx.drawImage(img, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
-    };
-    img.src = 'data:image/svg+xml;base64,' + window.btoa(encodeURIComponent(new XMLSerializer().serializeToString(mathSVG)));
+    if (mathSVG) {
+      // Convert the SVG into an image and draw it on the canvas
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
+      };
+      img.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(mathSVG))));
+    }
   });
 };
-
-
 
 // Function to draw the ball
 const drawBall = () => {
   ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2)
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
-    // Draw the MathJax expression
-    drawMathExpression();
 
-  // Add these lines to draw the letter 'B' inside the ball
-  ctx.font = '16px Arial';
-  ctx.fillStyle = 'white';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('B', ball.x, ball.y);
+  // Draw the MathJax expression
+  drawMathExpression();
 };
-
 
 // Update the draw function to include drawBall
 const draw = () => {
@@ -90,6 +87,7 @@ const stopStartHandler = (e) => {
 
 document.addEventListener("keydown", stopStartHandler, false);
 
+// Start the animation once the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded and parsed');
   start();
