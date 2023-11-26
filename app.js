@@ -22,19 +22,21 @@ document.body.appendChild(mathDiv);
 
 let mathExpressionImage = new Image();
 
-// Pre-render the MathJax expression
-MathJax.typesetPromise().then(() => {
+async function renderMathExpression() {
+  await MathJax.typesetPromise();
   const mathSVG = mathDiv.querySelector('svg');
   if (mathSVG) {
     const svgData = new XMLSerializer().serializeToString(mathSVG);
-    console.log(svgData)
     mathExpressionImage.src = 'data:image/svg+xml;base64,' + window.btoa(svgData);
     mathExpressionImage.onload = () => {
       start(); // Start the animation after the image is ready
     };
+  }else{
+    console.log('Error: MathJax SVG not found');
   }
-});
+}
 
+renderMathExpression();
 // Function to draw the ball
 const drawBall = () => {
   ctx.beginPath();
