@@ -17,7 +17,7 @@ const ball = {
 const mathDiv = document.createElement('div');
 mathDiv.style.visibility = 'hidden';
 mathDiv.style.position = 'absolute';
-mathDiv.innerHTML = '\\(\\sqrt{2}\\)';
+mathDiv.innerHTML = '\\[\\lim_{{x \\to 2}} x^2\\]';
 document.body.appendChild(mathDiv);
 
 let mathExpressionImage = new Image();
@@ -45,12 +45,16 @@ const drawBall = () => {
   ctx.fill();
   ctx.closePath();
 
-  // Use the pre-rendered MathJax expression
+  // Use the pre-rendered MathJax expression with original proportions
   if (mathExpressionImage.complete) {
-    ctx.drawImage(mathExpressionImage, ball.x - ball.radius, ball.y - ball.radius, 2 * ball.radius, 2 * ball.radius);
+    // Calculate the position so that the image is centered on the ball
+    const imgX = ball.x - mathExpressionImage.naturalWidth / 2;
+    const imgY = ball.y - mathExpressionImage.naturalHeight / 2;
+
+    // Draw the image at its natural size
+    ctx.drawImage(mathExpressionImage, imgX, imgY, mathExpressionImage.naturalWidth, mathExpressionImage.naturalHeight);
   }
 };
-
 // Update the draw function to include drawBall
 const draw = () => {
   ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
